@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="get_users">
+  {% for user in users %}
+    <p>username {{ user.stepUser.username }}</p>
+    <p>first_name {{ user.stepUser.first_name }}</p>
+    <p>last_name {{ user.stepUser.last_name }}</p>
+    <p>age {{ user.age }}</p>
+    {% thumbnail user.photo '150x150' crop='center' as im %}
+      <img src="{{ im.url }}" alt="{{ user.stepUser.last_name }} {{ user.stepUser.first_name }}"/>
+    {% endthumbnail %}
+  {% endfor %}
+</div>
+{% endblock %}

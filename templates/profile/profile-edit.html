@@ -1,0 +1,94 @@
+{% extends 'profile/base.html' %}
+
+{% block title %}
+  <title>Редактировать профиль</title>
+{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Давай Шагай</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="{% url 'profile' user.id %}">
+              <i class="fa fa-user"></i>
+              {% if user.last_name %}
+                {{ user.last_name }} {{ user.first_name }}
+              {% else %}
+                {{ user.username }}
+              {% endif %}</a>
+          </li>
+          <li class="active">
+            <a href="{% url 'profile_edit' user.id %}">
+              <i class="fa fa-pencil-square-o"></i>Редактировать профиль</a>
+          </li>
+          <li>
+            <a href="{% url 'users' %}">
+              <i class="fa fa-users"></i>Пользователи</a>
+          </li>
+          <li>
+            <a href="{% url 'logout' %}">
+              <i class="fa fa-sign-out"></i>Выход</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+
+    <div class="container" style='margin-top: 50px;'>
+      <div id="page-wrapper" >
+        <div id="page-inner">
+
+          <div class="row">
+            <h3 align="center">Редактировать профиль</h3>
+            <br>
+            <div class="col-md-4"></div>
+            <div class="col-md-4" style='text-align: center;'>
+              <form action="{% url 'profile_edit_form' user.id %}" method='POST' enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="first_name">Имя</label>
+                <input id="first_name" name="first_name" type="text" class="form-control" placeholder="Имя" maxlength='30' value="{{ theUser.stepUser.first_name }}{{ first_name }}">
+                {% for error in form.first_name.errors %}
+                  <p style="color: #f00;font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+                <label for="last_name">Фамилия</label>
+                <input id="last_name" name="last_name" type="text" class="form-control" placeholder="Фамилия" maxlength='30' value="{{ theUser.stepUser.last_name }}{{ last_name }}">
+                {% for error in form.last_name.errors %}
+                  <p style="color: #f00;font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+
+                <label for="city">Город</label>
+                <input id="city" name="city" type="text" class="form-control" placeholder="Город" maxlength='20' value="{{ theUser.city }}{{ city }}">
+                {% for error in form.city.errors %}
+                  <p style="color: #f00;font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+                <label for="age">Возраст</label>
+                <input id="age" name="age" type="text" class="form-control" placeholder="Возраст" maxlength='3' value="{{ theUser.age }}{{ age }}">
+                {% for error in form.age.errors %}
+                  <p style="color: #f00;font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+                <label for="photo">Загрузите фото</label>
+                <input id="photo" name="photo" type="file" class="form-control">
+                {% for error in form.photo.errors %}
+                  <p style="color: #f00;font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+                <br>
+                <input name="submit" type="submit" class='btn btn-info' value='Сохранить изменения'>
+              </form>
+            </div>
+            <div class="col-md-4"></div>
+          </div>
+
+        </div><!-- /. PAGE INNER  -->
+      </div><!-- /. PAGE WRAPPER  --></div>
+  {% else %}
+    <a href="{% url 'index' %}"><p align="center">Войдите</p></a>
+  {% endif %}
+{% endblock %}

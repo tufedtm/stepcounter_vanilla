@@ -87,6 +87,32 @@ def api_reg(request):
 
 
 @csrf_exempt
+def api_info(request):
+    dt = date.today()
+    response_date = {}
+    if request.method == 'POST':
+        username = request.POST.get('user', '')
+        password = request.POST.get('password', '')
+        us = User.objects.get(username=username)
+        response_date['first_name'] = us.getfirstname()
+        response_date['last_name'] = us.getlastname()
+        use = StepUser.objects.get(stepUser__username=username)
+        response_date['age'] = use.getage()
+        response_date['city'] = use.getcity()
+        response_date['allsteps'] = use.getsteps()
+        response_date['photo'] = use.getphotourl()
+        usid = use.getid()
+        ol = StepUserHistory.objects.filter(user__id=usid).filter(date=dt)
+        if ol.count() > 0:
+            response_date['step'] = StepUserHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
+        else:
+            response_date['step'] = 0
+        # return HttpResponse(json.dumps(response_date), content_type="application/json", status_code=422)
+    # response_date['error'] = "Успешно"
+    return HttpResponse(json.dumps(response_date), content_type="application/json")
+
+
+@csrf_exempt
 def step_update(request):
     response_date = {}
     dt = date.today()
@@ -148,32 +174,6 @@ def api_info_update(request):
             use.update(city=city)
     response_date['error'] = "Успешно"
     return HttpResponse(json.dumps(response_date), content_type="application/json", status=200)
-
-
-@csrf_exempt
-def api_info(request):
-    dt = date.today()
-    response_date = {}
-    if request.method == 'POST':
-        username = request.POST.get('user', '')
-        password = request.POST.get('password', '')
-        us = User.objects.get(username=username)
-        response_date['first_name'] = us.getfirstname()
-        response_date['last_name'] = us.getlastname()
-        use = StepUser.objects.get(stepUser__username=username)
-        response_date['age'] = use.getage()
-        response_date['city'] = use.getcity()
-        response_date['allsteps'] = use.getsteps()
-        response_date['photo'] = use.getphotourl()
-        usid = use.getid()
-        ol = StepUserHistory.objects.filter(user__id=usid).filter(date=dt)
-        if ol.count() > 0:
-            response_date['step'] = StepUserHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
-        else:
-            response_date['step'] = 0
-        # return HttpResponse(json.dumps(response_date), content_type="application/json", status_code=422)
-    # response_date['error'] = "Успешно"
-    return HttpResponse(json.dumps(response_date), content_type="application/json")
 
 
 @csrf_exempt
