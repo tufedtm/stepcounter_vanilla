@@ -122,6 +122,35 @@ def api_info(request):
 
 
 @csrf_exempt
+def api_info_update(request):
+    response = {}
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            step_user = authenticate(username=username, password=password).stepuser
+
+            step_user.user.first_name = request.POST.get('first_name')
+            step_user.user.last_name = request.POST.get('last_name')
+            step_user.age = request.POST.get('age')
+            step_user.city = request.POST.get('city')
+            step_user.save()
+            step_user.user.save()
+
+            response['first_name'] = request.POST.get('first_name')
+            response['last_name'] = request.POST.get('last_name')
+            response['age'] = request.POST.get('age')
+            response['city'] = request.POST.get('city')
+
+        except AttributeError:
+            response['error'] = 'Неверный логин или пароль'
+            return HttpResponse(json.dumps(response))
+
+    return HttpResponse(json.dumps(response))
+
+
+@csrf_exempt
 def step_update(request):
     response_date = {}
     dt = date.today()
@@ -156,31 +185,6 @@ def step_update(request):
                 step = int(step) + StepUserHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
                 history.update(steps=step)
 
-    response_date['error'] = "Успешно"
-    return HttpResponse(json.dumps(response_date), content_type="application/json", status=200)
-
-
-@csrf_exempt
-def api_info_update(request):
-    response_date = {}
-    if request.method == 'POST':
-        username = request.POST.get('user', '')
-        password = request.POST.get('password', '')
-        # user = authenticate(username=username, password=password)
-        first_name = request.POST.get('first_name', '')
-        last_name = request.POST.get('last_name', '')
-        age = request.POST.get('age', '')
-        city = request.POST.get('city', '')
-        us = User.objects.filter(username=username)
-        use = StepUser.objects.filter(stepUser__username=username)
-        if len(first_name) > 0:
-            us.update(first_name=first_name)
-        if len(last_name) > 0:
-            us.update(last_name=last_name)
-        if len(age) > 0:
-            use.update(age=age)
-        if len(city) > 0:
-            use.update(city=city)
     response_date['error'] = "Успешно"
     return HttpResponse(json.dumps(response_date), content_type="application/json", status=200)
 

@@ -57,41 +57,40 @@
     <button onclick="info()">отправить</button>
 </div>
 
-{#<hr>#}
-{##}
-{#<div>#}
-{#    <p>обновление данных</p>#}
-{##}
-{#    <p><label for="uname">логин</label>#}
-{#        <input id="uname" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#        <label for="upassword"> пароль</label>#}
-{#        <input id="upassword" type="password"/>#}
-{#    </p>#}
-{##}
-{#    <p><label for="ufirst_name">имя</label>#}
-{#        <input id="ufirst_name" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#        <label for="ulast"> фамилия</label>#}
-{#        <input id="ulast" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p><label for="age">возраст</label>#}
-{#        <input id="age" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#        <label for="city"> город</label>#}
-{#        <input id="city" type="text"/>#}
-{#    </p>#}
-{#    <button onclick="updateinfo()">отправить</button>#}
-{#</div>#}
-{##}
-{##}
+<hr>
+
+<div>
+    <p>обновление данных</p>
+
+    <p><label for="uname">логин</label>
+        <input id="uname" type="text"/>
+    </p>
+
+    <p>
+        <label for="upassword"> пароль</label>
+        <input id="upassword" type="password"/>
+    </p>
+
+    <p><label for="ufirst_name">имя</label>
+        <input id="ufirst_name" type="text"/>
+    </p>
+
+    <p>
+        <label for="ulast"> фамилия</label>
+        <input id="ulast" type="text"/>
+    </p>
+
+    <p><label for="age">возраст</label>
+        <input id="age" type="text"/>
+    </p>
+
+    <p>
+        <label for="city"> город</label>
+        <input id="city" type="text"/>
+    </p>
+    <button onclick="updateInfo()">отправить</button>
+</div>
+
 {#<hr>#}
 {##}
 {#<div>#}
@@ -196,42 +195,35 @@
         });
     }
 
-
-    {#    function updateinfo() {#}
-    {#        var user = $('#uname').val();#}
-    {#        var password = $('#upassword').val();#}
-    {#        var first_name = $('#ufirst_name').val();#}
-    {#        var last_name = $('#ulast').val();#}
-    {#        var age = $('#age').val();#}
-    {#        var city = $('#city').val();#}
-    {##}
-    {#        console.log(user);#}
-    {#        console.log(password);#}
-    {#        $.ajax({#}
-    {#            type: "POST",#}
-    {#            url: "{% url 'api_info_update' %}",#}
-    {#            dataType: "json",#}
-    {#            async: true,#}
-    {#            data: {#}
-    {#                csrfmiddlewaretoken: '{{csrf_token}}',#}
-    {#                user: user,#}
-    {#                password: password,#}
-    {#                first_name: first_name,#}
-    {#                last_name: last_name,#}
-    {#                age: age,#}
-    {#                city: city#}
-    {#            },#}
-    {#            success: function (json) {#}
-    {##}
-    {#                alert('ура');#}
-    {#                console.log(json);#}
-    {#            },#}
-    {#            error: function () {#}
-    {#                alert('error!');#}
-    {#            }#}
-    {#        });#}
-    {#    }#}
-    {##}
+    function updateInfo() {
+        var username = $('#uname').val();
+        var password = $('#upassword').val();
+        var first_name = $('#ufirst_name').val();
+        var last_name = $('#ulast').val();
+        var age = $('#age').val();
+        var city = $('#city').val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:update_info' %}",
+            dataType: "json",
+            async: true,
+            data: {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                username: username,
+                password: password,
+                first_name: first_name,
+                last_name: last_name,
+                age: age,
+                city: city
+            },
+            success: function (json) {
+                console.log(json);
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
 
 
     {##}
