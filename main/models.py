@@ -1,6 +1,7 @@
-# coding: utf8
-from django.db import models
+# coding:utf8
+from __future__ import unicode_literals
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class StepUsers(models.Model):
@@ -12,7 +13,7 @@ class StepUsers(models.Model):
 
     def getphotourl(self):
         if len(str(self.photo)) > 0:
-            return "http://127.0.0.1:8000/media/"+str(self.photo)
+            return "http://127.0.0.1:8000/media/" + str(self.photo)
         return None
 
     def getsteps(self):
@@ -27,8 +28,8 @@ class StepUsers(models.Model):
     def getid(self):
         return self.id
 
-    def __unicode__(self):
-        return unicode(self.stepUser)
+    def __str__(self):
+        return self.stepUser
 
     class Meta:
         verbose_name = 'пользователь'
@@ -46,8 +47,8 @@ class StepUsersHistory(models.Model):
     def getdate(self):
         return self.date
 
-    def __unicode__(self):
-        return unicode(self.user)
+    def __str__(self):
+        return self.user
 
     class Meta:
         verbose_name = 'история пользователя'

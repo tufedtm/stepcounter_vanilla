@@ -1,25 +1,26 @@
-# coding: utf-8
-from django.shortcuts import render, HttpResponse
-import json
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from main.models import StepUsers, StepUsersHistory
-from django.views.decorators.csrf import csrf_exempt
+# coding:utf8
+from __future__ import unicode_literals
 from datetime import date
+import json
 import time
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.shortcuts import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from main.models import StepUsers, StepUsersHistory
 
 
 @csrf_exempt
 def api_login(request):
     response_date = {}
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
-        password =request.POST.get('password', '')
+        password = request.POST.get('password', '')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
-               response_date['test'] = "Успешно"
-               login(request, user)
+                response_date['test'] = "Успешно"
+                login(request, user)
             # Redirect to a success page.
             else:
                 response_date['error'] = "аккаунт отключен"
@@ -45,10 +46,11 @@ def api_login(request):
             response_date['step'] = 0
     return HttpResponse(json.dumps(response_date), content_type="application/json", status=200)
 
+
 @csrf_exempt
 def api_reg(request):
     response_date = {}
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
         password = request.POST.get('password', '')
         first_name = request.POST.get('first_name', '')
@@ -92,7 +94,7 @@ def api_reg(request):
 def step_update(request):
     response_date = {}
     dt = date.today()
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
         password =request.POST.get('password', '')
         step = request.POST.get('step', '')
@@ -130,7 +132,7 @@ def step_update(request):
 @csrf_exempt
 def api_info_update(request):
     response_date = {}
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
         password =request.POST.get('password', '')
         # user = authenticate(username=username, password=password)
@@ -156,7 +158,7 @@ def api_info_update(request):
 def api_info(request):
     dt = date.today()
     response_date = {}
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
         password = request.POST.get('password', '')
         us = User.objects.get(username=username)
@@ -181,7 +183,7 @@ def api_info(request):
 @csrf_exempt
 def history(request):
     s = []
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         username = request.POST.get('user', '')
         password =request.POST.get('password', '')
         usid = StepUsers.objects.get(stepUser__username=username).getid()
@@ -196,4 +198,3 @@ def history(request):
             b['step'] = st
             s.append(b)
     return HttpResponse(json.dumps(s), content_type="application/json", status=200)
-

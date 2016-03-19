@@ -1,9 +1,10 @@
 # coding:utf8
-from django.shortcuts import render, redirect
-from .models import *
 from datetime import *
-from forms import *
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from .forms import ProfileEditForm
+from .models import StepUsers, StepUsersHistory
 
 
 def testy(request):

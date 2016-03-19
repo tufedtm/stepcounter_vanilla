@@ -14,14 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import url
-
+from . import views
 
 urlpatterns = [
-    url(r'^login$', 'api.views.api_login', name='api_login'),
-    url(r'^registration$', 'api.views.api_reg', name='api_reg'),
-    url(r'^step_update$', 'api.views.step_update', name='step_update'),
-    url(r'^step_info$', 'api.views.api_info', name='api_info'),
-    url(r'^step_info_update$', 'api.views.api_info_update', name='api_info_update'),
+    url(r'^login$', views.api_login, name='api_login'),
+    url(r'^registration$', views.api_reg, name='api_reg'),
+    url(r'^step_update$', views.step_update, name='step_update'),
+    url(r'^step_info$', views.api_info, name='api_info'),
+    url(r'^step_info_update$', views.api_info_update, name='api_info_update'),
 
-    url(r'^history', 'api.views.history', name='history'),
+    url(r'^history', views.history, name='history'),
 ]

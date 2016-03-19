@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import *
-
+from .models import StepUsers, StepUsersHistory
 
 admin.site.register(StepUsers)
 admin.site.register(StepUsersHistory)
