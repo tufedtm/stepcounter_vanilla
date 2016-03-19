@@ -9,6 +9,5 @@ urlpatterns = [
     url(r'^get_info/$', views.api_info, name='get_info'),
     url(r'^update_info/$', views.api_info_update, name='update_info'),
     url(r'^update_steps/$', views.api_steps_update, name='update_steps'),
-
-    url(r'^history/$', views.history, name='history'),
+    url(r'^get_history/$', views.api_history, name='get_history'),
 ]

@@ -112,21 +112,21 @@
     <button onclick="steps()">отправить</button>
 </div>
 
-{#<hr>#}
-{##}
-{#<div>#}
-{#    <p>массив</p>#}
-{##}
-{#    <p><label for="mname">логин</label>#}
-{#        <input id="mname" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#        <label for="mpassword">пароль</label>#}
-{#        <input id="mpassword" type="password"/>#}
-{#    </p>#}
-{#    <button onclick="hist()">отправить</button>#}
-{#</div>#}
+<hr>
+
+<div>
+    <p>массив</p>
+
+    <p><label for="mname">логин</label>
+        <input id="mname" type="text"/>
+    </p>
+
+    <p>
+        <label for="mpassword">пароль</label>
+        <input id="mpassword" type="password"/>
+    </p>
+    <button onclick="getHistory()">отправить</button>
+</div>
 
 
 <script>
@@ -147,7 +147,7 @@
                 console.log(json);
             },
             error: function (e) {
-                console.log(e)
+                console.log(e);
             }
         });
     }
@@ -173,7 +173,7 @@
                 console.log(json);
             },
             error: function (e) {
-                console.log(e)
+                console.log(e);
             }
         });
     }
@@ -195,7 +195,7 @@
                 console.log(json);
             },
             error: function (e) {
-                console.log(e)
+                console.log(e);
             }
         });
     }
@@ -225,7 +225,7 @@
                 console.log(json);
             },
             error: function (e) {
-                console.log(e)
+                console.log(e);
             }
         });
     }
@@ -249,35 +249,31 @@
                 console.log(json);
             },
             error: function (e) {
-                console.log(e)
+                console.log(e);
             }
         });
     }
-    {##}
-    {#    function hist() {#}
-    {#        var user = $('#mname').val();#}
-    {#        var password = $('#mpassword').val();#}
-    {#        console.log(user);#}
-    {#        console.log(password);#}
-    {#        $.ajax({#}
-    {#            type: "POST",#}
-    {#            url: "{% url 'history' %}",#}
-    {#            dataType: "json",#}
-    {#            async: true,#}
-    {#            data: {#}
-    {#                csrfmiddlewaretoken: '{{csrf_token}}',#}
-    {#                user: user,#}
-    {#                password: password#}
-    {#            },#}
-    {#            success: function (json) {#}
-    {##}
-    {#                alert('ура');#}
-    {#                console.log(json);#}
-    {#            },#}
-    {#            error: function () {#}
-    {#                alert('error!');#}
-    {#            }#}
-    {#        });#}
-    {#    }#}
+
+    function getHistory() {
+        var username = $('#mname').val();
+        var password = $('#mpassword').val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:get_history' %}",
+            dataType: "json",
+            async: true,
+            data: {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                username: username,
+                password: password
+            },
+            success: function (json) {
+                console.log(json);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
 </script>
 {% endspaceless %}

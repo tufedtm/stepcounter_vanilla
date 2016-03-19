@@ -178,20 +178,23 @@ def api_steps_update(request):
 
 
 @csrf_exempt
-def history(request):
-    s = []
+def api_history(request):
+    response = {}
     if request.method == 'POST':
-        username = request.POST.get('user', '')
-        password = request.POST.get('password', '')
-        usid = StepUser.objects.get(stepUser__username=username).getid()
-        steps = StepUserHistory.objects.filter(user__id=usid)
-        for step in steps:
-            b = {}
-            st = step.getsteps()
-            dt = step.getdate()
-            dat = int(time.mktime(dt.timetuple()) * 1000)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            b['date'] = dat
-            b['step'] = st
-            s.append(b)
-    return HttpResponse(json.dumps(s), content_type="application/json", status=200)
+        try:
+            step_user = authenticate(username=username, password=password).stepuser
+            step_user_history = StepUserHistory.objects.filter(step_user__user__username=step_user)
+
+            for i, item in enumerate(step_user_history):
+                response[i] = {
+                    'date': item.date.isoformat(),
+                    'steps': int(item.steps),
+                }
+        except:
+            response['error'] = 'Неверный логин или пароль'
+            return HttpResponse(json.dumps(response))
+
+    return HttpResponse(json.dumps(response), content_type="application/json", status=200)
