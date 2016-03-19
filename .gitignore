@@ -1,0 +1,11 @@
+.idea/
+__pycache__/
+media/
+node_modules/
+static/
+templates/
+
+*.log
+*.pyc
+*.sqlite3
+local_settings.py
