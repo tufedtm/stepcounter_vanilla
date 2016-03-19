@@ -91,22 +91,27 @@
     <button onclick="updateInfo()">отправить</button>
 </div>
 
-{#<hr>#}
-{##}
-{#<div>#}
-{#    <p>Шаги</p>#}
-{##}
-{#    <p><label for="sname">логин</label>#}
-{#        <input id="sname" type="text"/>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#        <label for="spassword">пароль</label>#}
-{#        <input id="spassword" type="password"/>#}
-{#    </p>#}
-{#    <button onclick="steps()">отправить</button>#}
-{#</div>#}
-{##}
+<hr>
+
+<div>
+    <p>Шаги</p>
+
+    <p><label for="sname">логин</label>
+        <input id="sname" type="text"/>
+    </p>
+
+    <p>
+        <label for="spassword">пароль</label>
+        <input id="spassword" type="password"/>
+    </p>
+
+    <p>
+        <label for="steps">шаги</label>
+        <input id="steps" type="number">
+    </p>
+    <button onclick="steps()">отправить</button>
+</div>
+
 {#<hr>#}
 {##}
 {#<div>#}
@@ -225,34 +230,29 @@
         });
     }
 
-
-    {##}
-    {#    function steps() {#}
-    {#        var user = $('#sname').val();#}
-    {#        var password = $('#spassword').val();#}
-    {#        console.log(user);#}
-    {#        console.log(password);#}
-    {#        $.ajax({#}
-    {#            type: "POST",#}
-    {#            url: "{% url 'step_update' %}",#}
-    {#            dataType: "json",#}
-    {#            async: true,#}
-    {#            data: {#}
-    {#                csrfmiddlewaretoken: '{{csrf_token}}',#}
-    {#                user: user,#}
-    {#                password: password,#}
-    {#                step: 12#}
-    {#            },#}
-    {#            success: function (json) {#}
-    {##}
-    {#                alert('ура');#}
-    {#                console.log(json);#}
-    {#            },#}
-    {#            error: function () {#}
-    {#                alert('error!');#}
-    {#            }#}
-    {#        });#}
-    {#    }#}
+    function steps() {
+        var username = $("#sname").val();
+        var password = $("#spassword").val();
+        var steps = $("#steps").val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:update_steps' %}",
+            dataType: "json",
+            async: true,
+            data: {
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                username: username,
+                password: password,
+                steps: steps
+            },
+            success: function (json) {
+                console.log(json);
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
     {##}
     {#    function hist() {#}
     {#        var user = $('#mname').val();#}
@@ -280,6 +280,4 @@
     {#        });#}
     {#    }#}
 </script>
-</body>
-</html>
 {% endspaceless %}

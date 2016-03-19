@@ -46,11 +46,11 @@ class StepUserHistory(models.Model):
     def get_steps(self):
         return self.steps
 
-    def getdate(self):
+    def get_date(self):
         return self.date
 
     def __str__(self):
-        return self.step_user.user.username
+        return '%s %d' % (self.step_user.user.username, self.steps)
 
     class Meta:
         verbose_name = 'история пользователя'

@@ -114,7 +114,7 @@ def api_info(request):
                     date__month=date.get('month'),
                     date__day=date.get('day')
                 )])
-        except:
+        except AttributeError:
             response['error'] = 'Неверный логин или пароль'
             return HttpResponse(json.dumps(response))
 
@@ -151,42 +151,30 @@ def api_info_update(request):
 
 
 @csrf_exempt
-def step_update(request):
-    response_date = {}
-    dt = date.today()
+def api_steps_update(request):
+    response = {}
     if request.method == 'POST':
-        username = request.POST.get('user', '')
-        password = request.POST.get('password', '')
-        step = request.POST.get('step', '')
-        username = username.encode()
-        allstepsquery = StepUser.objects.filter(stepUser__username=username)
-        allsteps = StepUser.objects.get(stepUser__username=username).getsteps()
-        usid = StepUser.objects.get(stepUser__username=username).getid()
-        history = StepUserHistory.objects.filter(user__id=usid).filter(date=dt)
-        if history.count() < 1:
-            allsteps = int(step) + allsteps
-            allstepsquery.update(steps=allsteps)
-            stepuser = StepUser.objects.get(stepUser__username=username)
-            hist = StepUserHistory(steps=step, date=dt)
-            hist.user = stepuser
-            hist.save()
-        else:
-            tod = StepUserHistory.objects.filter(date=dt)
-            if tod.count() < 1:
-                allsteps = int(step) + allsteps
-                allstepsquery.update(steps=allsteps)
-                stepuser = StepUser.objects.get(stepUser__username=username)
-                hist = StepUserHistory(steps=step, date=dt)
-                hist.user = stepuser
-                hist.save()
-            else:
-                allsteps = int(step) + allsteps
-                allstepsquery.update(steps=allsteps)
-                step = int(step) + StepUserHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
-                history.update(steps=step)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        steps = int(request.POST.get('steps'))
 
-    response_date['error'] = "Успешно"
-    return HttpResponse(json.dumps(response_date), content_type="application/json", status=200)
+        try:
+            step_user = authenticate(username=username, password=password).stepuser
+
+            step_history = StepUserHistory(step_user_id=step_user.id, steps=steps, date=timezone.now().today())
+            step_history.save()
+
+            step_user.steps += steps
+            step_user.save()
+
+            response['steps'] = steps
+            response['date'] = step_history.date.isoformat()
+
+        except AttributeError:
+            response['error'] = 'Неверный логин или пароль'
+            return HttpResponse(json.dumps(response))
+
+    return HttpResponse(json.dumps(response))
 
 
 @csrf_exempt
