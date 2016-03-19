@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from .forms import ProfileEditForm
-from .models import StepUsers, StepUsersHistory
+from .models import StepUser, StepUserHistory
 
 
 def testy(request):
@@ -57,31 +57,31 @@ def step_logout(request):
 
 
 def profile(request, user_id):
-    users = StepUsers.objects.all().order_by('-steps')[:10]
-    usersteps = StepUsersHistory.objects.all()
-    theUser = StepUsers.objects.get(stepUser__id=user_id)
-    fats = StepUsers.objects.all().order_by('steps')[:10]
+    users = StepUser.objects.all().order_by('-steps')[:10]
+    usersteps = StepUserHistory.objects.all()
+    theUser = StepUser.objects.get(user__id=user_id)
+    fats = StepUser.objects.all().order_by('steps')[:10]
 
     month = date.today() - timedelta(days=30)
     week = date.today() - timedelta(days=7)
     today = date.today()
 
-    stepsmonth = StepUsersHistory.objects.filter(user__stepUser__id=user_id).filter(date__range=(month, today))
+    stepsmonth = StepUserHistory.objects.filter(step_user=user_id).filter(date__range=(month, today))
     stepmonth = 0
     for step in stepsmonth:
         stepmonth += step.steps
 
-    stepsweek = StepUsersHistory.objects.filter(user__stepUser__id=user_id).filter(date__range=(week, today))
+    stepsweek = StepUserHistory.objects.filter(step_user=user_id).filter(date__range=(week, today))
     stepweek = 0
     for step in stepsweek:
         stepweek += step.steps
 
-    stepstoday = StepUsersHistory.objects.filter(user__stepUser__id=user_id).filter(date=today)
+    stepstoday = StepUserHistory.objects.filter(step_user=user_id).filter(date=today)
     steptoday = 0
     for step in stepstoday:
         steptoday += step.steps
 
-    allsteps = StepUsersHistory.objects.filter(user__stepUser__id=user_id)
+    allsteps = StepUserHistory.objects.filter(step_user=user_id)
     allstep = 0
     for step in allsteps:
         allstep += step.steps
@@ -100,7 +100,7 @@ def profile(request, user_id):
 
 
 def profile_edit(request, user_id, ):
-    theUser = StepUsers.objects.get(stepUser__id=user_id)
+    theUser = StepUser.objects.get(stepUser__id=user_id)
     context = {
         'theUser': theUser
     }
@@ -116,9 +116,9 @@ def profile_edit_form(request, user_id):
         city = request.POST['city']
         age = request.POST['age']
         if f.is_valid():
-            StepUsers.objects.filter(stepUser=user_id).update(city=city, age=age)
+            StepUser.objects.filter(stepUser=user_id).update(city=city, age=age)
             User.objects.filter(id=user_id).update(first_name=first_name, last_name=last_name)
-            use = StepUsers.objects.get(stepUser=user_id)
+            use = StepUser.objects.get(stepUser=user_id)
             use.photo = request.FILES['photo']
             use.save()
             return redirect('profile', user_id)
@@ -134,8 +134,8 @@ def profile_edit_form(request, user_id):
 
 
 def profiles(request):
-    users = StepUsers.objects.all()
-    steps = StepUsersHistory.objects.all()
+    users = StepUser.objects.all()
+    steps = StepUserHistory.objects.all()
     context = {
         'users': users,
         'steps': steps

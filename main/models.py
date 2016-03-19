@@ -4,51 +4,53 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class StepUsers(models.Model):
-    stepUser = models.ForeignKey(User, verbose_name='Пользователь', null=True, blank=True)
+class StepUser(models.Model):
+    user = models.OneToOneField(User, verbose_name='Логин', null=True, blank=True, unique=True)
     age = models.IntegerField('Возраст', null=True, blank=True)
     city = models.CharField('Город', max_length=50, null=True, blank=True)
     photo = models.ImageField('Фото', upload_to='users/photo', null=True, blank=True)
     steps = models.BigIntegerField('Общее количество шагов', null=True, blank=True)
 
-    def getphotourl(self):
-        if len(str(self.photo)) > 0:
-            return "http://127.0.0.1:8000/media/" + str(self.photo)
-        return None
+    def get_first_name(self):
+        return self.user.first_name
 
-    def getsteps(self):
-        return self.steps
+    def get_last_name(self):
+        return self.user.last_name
 
-    def getage(self):
+    def get_age(self):
         return self.age
 
-    def getcity(self):
+    def get_city(self):
         return self.city
 
-    def getid(self):
-        return self.id
+    def get_steps(self):
+        return self.steps
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
 
     def __str__(self):
-        return self.stepUser
+        return self.user.username
 
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
 
 
-class StepUsersHistory(models.Model):
-    user = models.ForeignKey(StepUsers, verbose_name='Пользователь')
-    date = models.DateField('Дата', auto_now_add=True)
+class StepUserHistory(models.Model):
+    step_user = models.ForeignKey(StepUser, verbose_name='Пользователь')
+    date = models.DateTimeField('Дата')
     steps = models.BigIntegerField('Количество шагов')
 
-    def getsteps(self):
+    def get_steps(self):
         return self.steps
 
     def getdate(self):
         return self.date
 
     def __str__(self):
-        return self.user
+        return self.step_user.user.username
 
     class Meta:
         verbose_name = 'история пользователя'
