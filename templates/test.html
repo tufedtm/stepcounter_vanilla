@@ -175,25 +175,22 @@
     }
 
     function info() {
-        var user = $("#iname").val();
+        var username = $("#iname").val();
         var password = $("#ipassword").val();
         $.ajax({
             type: "POST",
-            url: "{% url 'api_info' %}",
+            url: "{% url 'api:get_info' %}",
             dataType: "json",
             async: true,
             data: {
                 csrfmiddlewaretoken: "{{csrf_token}}",
-                user: user,
+                username: username,
                 password: password
             },
             success: function (json) {
-
-                alert("ура");
                 console.log(json);
             },
             error: function (e) {
-                alert("error!");
                 console.log(e)
             }
         });
