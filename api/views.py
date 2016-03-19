@@ -14,88 +14,76 @@ from main.models import StepUser, StepUserHistory
 def api_login(request):
     response = {}
     if request.method == 'POST':
-        username = request.POST.get('user')
+        username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
 
         if user:
             if user.is_active:
-                response['test'] = 'Успешно'
                 login(request, user)
             else:
                 response['error'] = 'Аккаунт отключен'
 
-                return HttpResponse(json.dumps(response), status=422)
+                return HttpResponse(json.dumps(response))
         else:
             response['error'] = 'Неверный логин или пароль'
 
-            return HttpResponse(json.dumps(response), status=422)
+            return HttpResponse(json.dumps(response))
 
         step_user = StepUser.objects.get(user__username=username)
         response['first_name'] = step_user.get_first_name()
         response['last_name'] = step_user.get_last_name()
         response['age'] = step_user.get_age()
         response['city'] = step_user.get_city()
-        response['steps_all'] = step_user.get_steps()
         response['photo'] = step_user.get_photo_url()
+        response['steps_all'] = step_user.get_steps()
 
-        step_user_id = step_user.id
         date = {
             'year': timezone.now().date().year,
             'month': timezone.now().date().month,
             'day': timezone.now().date().day
         }
         response['steps_today'] = sum(
-            [x.steps for x in StepUserHistory.objects.filter(step_user__id=step_user_id).filter(
+            [x.steps for x in StepUserHistory.objects.filter(step_user__id=step_user.id).filter(
                 date__year=date.get('year'),
                 date__month=date.get('month'),
                 date__day=date.get('day')
             )])
 
-    return HttpResponse(json.dumps(response), status=200)
+    return HttpResponse(json.dumps(response))
 
 
 @csrf_exempt
 def api_reg(request):
-    response_date = {}
+    response = {}
     if request.method == 'POST':
-        username = request.POST.get('user', '')
-        password = request.POST.get('password', '')
-        first_name = request.POST.get('first_name', '')
-        last_name = request.POST.get('last_name', '')
-        us = User.objects.filter(username=username).values()
-        if len(us) > 0:
-            response_date['error'] = "Пользователь с таким ником уже существует"
-            return HttpResponse(json.dumps(response_date), content_type="application/json")#, status_code=422)
-        else:
-            user = User.objects.create_user(username, 'lennon@thebeatles.com', password)
-            user.first_name = first_name
-            user.last_name = last_name
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+
+        try:
+            StepUser.objects.get(user__username=username)
+            response['error'] = 'Пользователь с таким логином уже существует'
+
+            return HttpResponse(json.dumps(response))
+        except StepUser.DoesNotExist:
+            user = User(username=username, password=password, first_name=first_name, last_name=last_name)
             user.save()
-            response_date['test'] = "Успешно"
-            auth_user = authenticate(username=username, password=password)
-            login(request, auth_user)
-            userid = User.objects.get(username=username).getuser()
-            uss = User.objects.get(pk=userid)
-            stepuser = StepUser(age=0, city="", steps=0)
-            stepuser.stepUser=uss
-            stepuser.save()
-            us = User.objects.get(username=username)
-            use = StepUser.objects.get(stepUser__username=username)
-            response_date['first_name'] = us.getfirstname()
-            response_date['last_name'] = us.getlastname()
-            response_date['age'] = use.getage()
-            response_date['city'] = use.getcity()
-            response_date['allsteps'] = use.getsteps()
-            response_date['photo'] = use.getphotourl()
-            dt = date.today()
-            usid = use.getid()
-            ol = StepUserHistory.objects.filter(user__id=usid).filter(date=dt)
-            if ol.count() > 0:
-                response_date['step'] = StepUserHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
-            else:
-                response_date['step'] = 0
-    return HttpResponse(json.dumps(response_date), content_type="application/json", status=201)
+            StepUser.objects.create(user_id=user.id)
+
+            # auth_user = authenticate(username=username, password=password)
+            # login(request, auth_user)
+
+            response['first_name'] = first_name
+            response['last_name'] = last_name
+            response['age'] = 0
+            response['city'] = ''
+            response['photo'] = ''
+            response['steps_all'] = 0
+            response['steps_today'] = 0
+
+    return HttpResponse(json.dumps(response), status=201)
 
 
 @csrf_exempt

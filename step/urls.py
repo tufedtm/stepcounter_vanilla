@@ -6,7 +6,9 @@ from main import views
 
 urlpatterns = [
     url(r'^', include('main.urls')),
-    url(r'^api/', include('api.urls')),
+
+    # todo проверка прав
+    url(r'^api/v1/', include('api.urls')),
     url(r'^api-step-test/', views.testy, name='testy'),
 
     url(r'^admin/', include(admin.site.urls)),
