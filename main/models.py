@@ -17,6 +17,12 @@ class StepUser(models.Model):
     def get_last_name(self):
         return self.user.last_name
 
+    def get_name(self):
+        if self.get_first_name() and self.get_last_name():
+            return '%s %s' % (self.get_last_name(), self.get_first_name())
+        else:
+            return self.user.username
+
     def get_age(self):
         return self.age
 

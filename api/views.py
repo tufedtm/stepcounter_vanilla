@@ -1,10 +1,9 @@
 # coding:utf8
 from __future__ import unicode_literals
 import json
-import time
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from main.models import StepUser, StepUserHistory
@@ -198,3 +197,7 @@ def api_history(request):
             return HttpResponse(json.dumps(response))
 
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
+
+
+def testy(request):
+    return render(request, 'api/test.html')

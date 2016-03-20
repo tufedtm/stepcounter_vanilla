@@ -1,10 +1,8 @@
-﻿{% extends 'profile/base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 {% load thumbnail %}
 
-{% block title %}
-  <title>Страница пользователя</title>
-{% endblock %}
+{% block title %}Страница пользователя{% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
@@ -17,7 +15,7 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li class="active">
-            <a href="{% url 'profile' user.id %}">
+            <a href="{% url 'web-mug:profile' user.id %}">
               <i class="fa fa-user"></i>
               {% if user.last_name %}
                 {{ user.last_name }} {{ user.first_name }}
@@ -26,15 +24,15 @@
               {% endif %}</a>
           </li>
           <li>
-            <a href="{% url 'profile_edit' user.id %}">
+            <a href="{% url 'web-mug:profile_edit' user.id %}">
               <i class="fa fa-pencil-square-o"></i>Редактировать профиль</a>
           </li>
           <li>
-            <a href="{% url 'users' %}">
+            <a href="{% url 'web-mug:users' %}">
               <i class="fa fa-users"></i>Пользователи</a>
           </li>
           <li>
-            <a href="{% url 'logout' %}">
+            <a href="{% url 'web-mug:logout' %}">
               <i class="fa fa-sign-out"></i>Выход</a>
           </li>
         </ul>
@@ -50,7 +48,9 @@
             <div class="col-md-12">
               <div class="user-info">
 {#                {% thumbnail theUser.photo '128x128' crop='center' as im %}#}
-                  <img src="{{ theUser.photo.url }}" height="128" width="128" alt="{{ theUser.stepUser.last_name }} {{ theUser.stepUser.first_name }}" class="user-photo">
+                  {% if theUser.photo %}
+	                  <img src="{{ theUser.photo.url }}" height="128" width="128" alt="{{ theUser.stepUser.last_name }} {{ theUser.stepUser.first_name }}" class="user-photo">
+                  {% endif %}
 {#                {% endthumbnail %}#}
                 {% if theUser.stepUser.last_name %}
                   <h3 class="user-name">{{ theUser.stepUser.last_name }} {{ theUser.stepUser.first_name }}</h3>
@@ -619,14 +619,17 @@
             hideHover: 'auto',
             resize: true
           });
-        },
-        initialization: function () {
-          mainApp.main_fun();
         }
       }
     </script>
 
   {% else %}
-    <a href="{% url 'index' %}"><p align="center">Войдите</p></a>
+    <a href="{% url 'web-mug:index' %}"><p align="center">Войдите</p></a>
   {% endif %}
+{% endblock %}
+
+{% block script_bottom %}
+<script>
+	mainApp.main_fun();
+</script>
 {% endblock %}

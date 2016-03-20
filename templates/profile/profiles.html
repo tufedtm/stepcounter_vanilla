@@ -1,9 +1,7 @@
-﻿{% extends 'profile/base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-  <title>Страница пользователя</title>
-{% endblock %}
+{% block title %}Страница пользователя{% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
@@ -16,7 +14,7 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="{% url 'profile' user.id %}">
+            <a href="{% url 'web-mug:profile' user.id %}">
               <i class="fa fa-user"></i>
               {% if user.last_name %}
                 {{ user.last_name }} {{ user.first_name }}
@@ -25,15 +23,15 @@
               {% endif %}</a>
           </li>
           <li>
-            <a href="{% url 'profile_edit' user.id %}">
+            <a href="{% url 'web-mug:profile_edit' user.id %}">
               <i class="fa fa-pencil-square-o"></i>Редактировать профиль</a>
           </li>
           <li class="active">
-            <a href="{% url 'users' %}">
+            <a href="{% url 'web-mug:users' %}">
               <i class="fa fa-users"></i>Пользователи</a>
           </li>
           <li>
-            <a href="{% url 'logout' %}">
+            <a href="{% url 'web-mug:logout' %}">
               <i class="fa fa-sign-out"></i>Выход</a>
           </li>
         </ul>
@@ -104,39 +102,29 @@
     <!-- /. PAGE WRAPPER  -->
     <!-- /. WRAPPER  -->
   {% else %}
-    <a href="{% url 'index' %}"><p align="center">Войдите</p></a>
+    <a href="{% url 'web-mug:index' %}"><p align="center">Войдите</p></a>
   {% endif %}
 {% endblock %}
 
-{% block scripts %}
-  <script src="{% static 'js/jquery-1.10.2.js' %}"></script>
-  <!-- BOOTSTRAP SCRIPTS -->
-  <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  <!-- METISMENU SCRIPTS -->
-  <script src="{% static 'js/jquery.metisMenu.js' %}"></script>
-  <!-- DATA TABLE SCRIPTS -->
-  <script src="{% static 'js/dataTables/jquery.dataTables.js' %}"></script>
-  <script src="{% static 'js/dataTables/dataTables.bootstrap.js' %}"></script>
-  <script>
-    $(document).ready(function () {
-      $('#dataTables-example').dataTable({
-        "language": {
-          "lengthMenu": "Показать _MENU_ на одной странице",
-          "zeroRecords": "Не найдено",
-          "info": "Показано страниц _PAGE_ из _PAGES_",
-          "infoEmpty": "No records available",
-          "infoFiltered": "(filtered from _MAX_ total records)",
-          "search": "Поиск пользователя _INPUT_",
-          "paginate": {
-            // "first":      "first",
-            // "last":       "last",
-            "previous":   "Предыдущая",
-            "next":       "Следующая"
-          }
-        }
-      });
-    });
-  </script>
-  <!-- CUSTOM SCRIPTS -->
-  <script src="{% static 'js/custom.js' %}"></script>
+{% block script_bottom %}
+	<script>
+		$(document).ready(function () {
+			$('#dataTables-example').dataTable({
+				"language": {
+					"lengthMenu": "Показать _MENU_ на одной странице",
+					"zeroRecords": "Не найдено",
+					"info": "Показано страниц _PAGE_ из _PAGES_",
+					"infoEmpty": "No records available",
+					"infoFiltered": "(filtered from _MAX_ total records)",
+					"search": "Поиск пользователя _INPUT_",
+					"paginate": {
+						// "first":      "first",
+						// "last":       "last",
+						"previous": "Предыдущая",
+						"next": "Следующая"
+					}
+				}
+			});
+		});
+	</script>
 {% endblock %}

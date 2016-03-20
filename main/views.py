@@ -1,5 +1,6 @@
 # coding:utf8
-from datetime import *
+from __future__ import unicode_literals
+import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -7,53 +8,22 @@ from .forms import ProfileEditForm
 from .models import StepUser, StepUserHistory
 
 
-def testy(request):
-    return render(request, 'test.html')
-
-
-def index(request):
-    return render(request, 'index.html')
-
-
 def step_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                profile(request, user.id)
-                return redirect('profile', user.id)
-            # Redirect to a success page.
-        #     else:
-        #         response_date['error'] = "аккаунт отключен"
-        #         return HttpResponse(json.dumps(response_date), content_type="application/json", status=422)
-        #     # Return a 'disabled account' error message
-        # else:
-        #     response_date['error'] = "Пароль или логин неверный"
-        #     return HttpResponse(json.dumps(response_date), content_type="application/json", status=422)
-        # us = User.objects.get(username=username)
-        # use = StepUsers.objects.get(stepUser__username=username)
-        # response_date['first_name'] = us.getfirstname()
-        # response_date['last_name'] = us.getlastname()
-        # response_date['age'] = use.getage()
-        # response_date['city'] = use.getcity()
-        # response_date['allsteps'] = use.getsteps()
-        # response_date['photo'] = use.getphotourl()
-        # dt = date.today()
-        # usid = use.getid()
-        # ol = StepUsersHistory.objects.filter(user__id=usid).filter(date=dt)
-        # if ol.count() > 0:
-        #     response_date['step'] = StepUsersHistory.objects.filter(user__id=usid).get(date=dt).getsteps()
-        # else:
-        #     response_date['step'] = 0
-    return redirect('index')
+
+        if user and user.is_active:
+            login(request, user)
+            profile(request, user.id)
+            return redirect('web-mug:profile', user.id)
+    return redirect('web-mug:index')
 
 
 def step_logout(request):
     logout(request)
-    return redirect('index')
+    return redirect('web-mug:index')
 
 
 def profile(request, user_id):
@@ -62,9 +32,9 @@ def profile(request, user_id):
     theUser = StepUser.objects.get(user__id=user_id)
     fats = StepUser.objects.all().order_by('steps')[:10]
 
-    month = date.today() - timedelta(days=30)
-    week = date.today() - timedelta(days=7)
-    today = date.today()
+    month = datetime.date.today() - datetime.timedelta(days=30)
+    week = datetime.date.today() - datetime.timedelta(days=7)
+    today = datetime.date.today()
 
     stepsmonth = StepUserHistory.objects.filter(step_user=user_id).filter(date__range=(month, today))
     stepmonth = 0
@@ -100,7 +70,7 @@ def profile(request, user_id):
 
 
 def profile_edit(request, user_id, ):
-    theUser = StepUser.objects.get(stepUser__id=user_id)
+    theUser = StepUser.objects.get(user=user_id)
     context = {
         'theUser': theUser
     }

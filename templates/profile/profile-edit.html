@@ -1,8 +1,6 @@
-{% extends 'profile/base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}
-  <title>Редактировать профиль</title>
-{% endblock %}
+{% block title %}Редактировать профиль{% endblock %}
 
 {% block content %}
 
@@ -16,7 +14,7 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="{% url 'profile' user.id %}">
+            <a href="{% url 'web-mug:profile' user.id %}">
               <i class="fa fa-user"></i>
               {% if user.last_name %}
                 {{ user.last_name }} {{ user.first_name }}
@@ -25,15 +23,15 @@
               {% endif %}</a>
           </li>
           <li class="active">
-            <a href="{% url 'profile_edit' user.id %}">
+            <a href="{% url 'web-mug:profile_edit' user.id %}">
               <i class="fa fa-pencil-square-o"></i>Редактировать профиль</a>
           </li>
           <li>
-            <a href="{% url 'users' %}">
+            <a href="{% url 'web-mug:users' %}">
               <i class="fa fa-users"></i>Пользователи</a>
           </li>
           <li>
-            <a href="{% url 'logout' %}">
+            <a href="{% url 'web-mug:logout' %}">
               <i class="fa fa-sign-out"></i>Выход</a>
           </li>
         </ul>
@@ -51,7 +49,7 @@
             <br>
             <div class="col-md-4"></div>
             <div class="col-md-4" style='text-align: center;'>
-              <form action="{% url 'profile_edit_form' user.id %}" method='POST' enctype="multipart/form-data">
+              <form action="{% url 'web-mug:profile_edit_form' user.id %}" method='POST' enctype="multipart/form-data">
                 {% csrf_token %}
                 <label for="first_name">Имя</label>
                 <input id="first_name" name="first_name" type="text" class="form-control" placeholder="Имя" maxlength='30' value="{{ theUser.stepUser.first_name }}{{ first_name }}">
@@ -89,6 +87,6 @@
         </div><!-- /. PAGE INNER  -->
       </div><!-- /. PAGE WRAPPER  --></div>
   {% else %}
-    <a href="{% url 'index' %}"><p align="center">Войдите</p></a>
+    <a href="{% url 'web-mug:index' %}"><p align="center">Войдите</p></a>
   {% endif %}
 {% endblock %}

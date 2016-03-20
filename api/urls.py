@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 from . import views
 
 app_name = 'api'
@@ -10,4 +11,6 @@ urlpatterns = [
     url(r'^update_info/$', views.api_info_update, name='update_info'),
     url(r'^update_steps/$', views.api_steps_update, name='update_steps'),
     url(r'^get_history/$', views.api_history, name='get_history'),
+
+    url(r'^test/', login_required(views.testy), name='testy'),
 ]
