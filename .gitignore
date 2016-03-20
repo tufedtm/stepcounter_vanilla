@@ -2,8 +2,6 @@
 __pycache__/
 media/
 node_modules/
-static/
-migrations/
 
 *.log
 *.pyc
